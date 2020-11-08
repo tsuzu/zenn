@@ -211,8 +211,6 @@ func main() {
 # おわりに
 Goの良さを思う存分語ることができて非常に満足しました。間違いなどあればご指摘いただけると幸いです。
 
-
-![Gophers](gophers.jpg)
-
+![Gophers](https://storage.googleapis.com/zenn-user-upload/vwt9h4rukq4ocvstcf2zm7c26fpb)
 
 [1]: https://www.publickey1.jp/blog/17/hashicorp_interview02.html
