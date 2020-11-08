@@ -211,7 +211,8 @@ func main() {
 # おわりに
 Goの良さを思う存分語ることができて非常に満足しました。間違いなどあればご指摘いただけると幸いです。
 
-<img title='IMG_3359.jpg' src='https://pbs.twimg.com/media/EmUL9QOU4AImQzA?format=jpg&name=small' width="1024" data-meta='{"width":1024,"height":768}'>
+
+![Gophers](gophers.jpg)
 
 
 [1]: https://www.publickey1.jp/blog/17/hashicorp_interview02.html
