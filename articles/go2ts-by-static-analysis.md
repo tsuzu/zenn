@@ -6,9 +6,9 @@ topics: ["go", "typescript", "静的解析"] # タグ。["markdown", "rust", "aw
 published: false # 公開設定（falseにすると下書き）
 ---
 
+この記事は[Go 2 Advent Calendar 2020](https://qiita.com/advent-calendar/2020/go2) 6日目の記事です。
 
 # 何を作ったか
-この記事は[Go 2 Advent Calendar 2020](https://qiita.com/advent-calendar/2020/go2) 6日目の記事です。
 
 先日、[Goの良さを好きなだけ語りたい](https://zenn.dev/articles/go-10-year-anniversary/edit) という記事を書き、その中でも軽く触れたのですがGoの型から静的解析でTypeScriptのinterfaceを生成する[go2ts](https://github.com/go-generalize/go2ts)というライブラリを作った、という話をしました。
 
