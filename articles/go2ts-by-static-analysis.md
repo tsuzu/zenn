@@ -10,7 +10,7 @@ published: true # 公開設定（falseにすると下書き）
 
 # 何を作ったか
 
-先日、[Goの良さを好きなだけ語りたい](https://zenn.dev/articles/go-10-year-anniversary/edit) という記事を書き、その中でも軽く触れたのですがGoの型から静的解析でTypeScriptのinterfaceを生成する[go2ts](https://github.com/go-generalize/go2ts)というライブラリを作った、という話をしました。
+先日、[Goの良さを好きなだけ語りたい](https://zenn.dev/tsuzu/articles/go-10-year-anniversary) という記事を書き、その中でも軽く触れたのですがGoの型から静的解析でTypeScriptのinterfaceを生成する[go2ts](https://github.com/go-generalize/go2ts)というライブラリを作った、という話をしました。
 
 そのライブラリをどう実装したのかについて書いていきます。
 
