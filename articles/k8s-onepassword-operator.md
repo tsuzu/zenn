@@ -108,7 +108,7 @@ type: Opaque
 
 
 ## Auto Restartを試す
-KubernetesのSecretリソースは更新されたとしてもすでに起動しているPodは更新されたデータを認識しないという問題があります。これを解決するために[Reloader](https://github.com/stakater/Reloader) というコントローラを使ったり、ConfigMapに関してはkustomizeのconfigMapGeneratorを使ったりします。
+KubernetesのSecretリソースは更新されたとしてもすでに起動しているPodは更新されたデータを認識しないという問題があります。これを解決するために[Reloader](https://github.com/stakater/Reloader) というコントローラを使ったり、kustomizeのsecretGenerator/configMapGeneratorを使ったりします。
 
 1Password Connect Kubernetes Operatorに関してはDeploymentの自動ローリングアップデートに対応しています。デフォルトでは無効化されていますが、オペレータ全体、namespace単位、Deployment単位、OnePasswordItem単位で有効化できるので必要に応じて有効化するのが良いと思います。
 
