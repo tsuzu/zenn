@@ -241,7 +241,7 @@ dbs:
   - path: /db/app.db
     replicas:
       - type: s3
-        endpoint: {{ MinIOのS3 API endpoint }}
+        endpoint: {{ MinIOのS3 API endpoint (http://example.com:9000) }}
         bucket: app
         path: app.db
 ```
