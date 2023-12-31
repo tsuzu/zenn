@@ -7,9 +7,11 @@ published: true # 公開設定（falseにすると下書き）
 ---
 
 # TL;DR
-* 同一クラスタ内のminio-operatorを使う場合は[公式のexample](https://github.com/minio/operator/tree/v5.0.11/examples/kustomization/sts-example)に従おう
-    * (こっちだとかなり楽に設定できそう)
-* 外部のMinIOだったり、minio-operatorに依存しない手順でMinIOを構築している場合はMinIOのOpenID Connect設定に追加して頑張る
+* 同一クラスタ内 && minio-operatorを使う場合
+  * →[公式のexample](https://github.com/minio/operator/tree/v5.0.11/examples/kustomization/sts-example)に従おう
+  * (こっちだとかなり楽に設定できそう)
+* 外部のMinIO || minio-operator以外の手順でMinIOを構築している場合
+  * → MinIOのOpenID Connect設定に追加して頑張る **←今回はこっちメインの話**
 
 # はじめに
 本当はAdvent Calendarのネタとして用意してたんですが、色々躓いてminioにPR送ったりしていたら遅くなりました。
