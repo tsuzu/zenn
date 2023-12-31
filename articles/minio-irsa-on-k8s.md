@@ -234,7 +234,7 @@ bash-4.2# aws s3 ls
 
 https://github.com/minio/console/pull/3168 のPRで修正されているのですが、まだリリースタグが打たれていないのでがリリースされるのを待った方が良いでしょう。OpenIDでログインできないだけでなく、ID/Passwordでもログインできません。
 
-## litestremでMinIOのIRSAを使う
+## litestreamでMinIOのIRSAを使う
 自宅クラスタでMySQLやPostgreSQLを用意するのは地味に面倒で、PV等を使わずサクッと作りたい時があります。そんな時はSQLiteを使って[litestream](https://litestream.io/) でS3にreplicateし続けて、起動時にS3から復旧することでPVを利用せずDBを使うことができます。
 
 そのlitestreamで今回のIRSA for MinIOを使う方法を紹介しておきます。こんな感じでlitestreamのconfigを用意します。
