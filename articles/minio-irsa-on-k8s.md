@@ -137,7 +137,7 @@ kube-apiserverが使用する証明書はクラスタ内の独自CA certificate�
 
 ### MinIOでOpenID Connectの設定をする
 
-Web UIからも出来ますがIaCがお好きなみなさんはYAMLで設定投入したいと思うのでそのやり方で書いておきます。
+Web UIからも出来ますがIaCがお好きなみなさんはYAMLで設定投入したいと思うのでそのやり方で書いておきます。以下を環境変数に突っ込みましょう。
 
 ```
 MINIO_IDENTITY_OPENID_CONFIG_URL=https://{{ kube-apiserverのエンドポイント }}:6443/.well-known/openid-configuration
