@@ -167,7 +167,7 @@ writeonly
 IAM Roles: arn:minio:iam:::role/oxnUw3DAuQF1uggjXGxI2AmW8IA
 ```
 
-じゃあ権限をPodごとに制御できないのかというと一応PolicyのConditionで制御はできるらしいです。Policyは自前で別途用意した方が良い、というのはこれが理由です。
+じゃあ権限をService Accountごとに制御できないのかというと一応PolicyのConditionで制御はできるらしいです。Policyは自前で別途用意した方が良い、というのはこれが理由です。
 https://min.io/docs/minio/windows/administration/identity-access-management/oidc-access-management.html#minio-external-identity-management-openid-access-control
 
 ### PodからMinIOに接続する
