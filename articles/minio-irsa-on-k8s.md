@@ -31,6 +31,9 @@ NASの外部にあるKubernetesクラスタを自前で運用しており、こ�
 ## IAM Roles for Service Accounts(IRSA)について
 AWSでEKS(on EC2)からAWSのAPIを叩く際には大きく分けて3つの方法があります。「愚直にAWS IAM Userを発行する方法」、「EC2 Instanceに紐づいたIAM Roleを使う方法」、そして「IAM Roles for Service Accounts(IRSA)」を使う方法です。
 
+追記
+...と思っていたら [EKS Pod Identity](https://www.kaitoy.xyz/2023/12/25/eks-pod-identity/)というのが増えていたらしい...知らなかった。これから追います
+
 「愚直にAWS IAM Userを発行する方法」については管理コストがかかり面倒だったり、「EC2 Instanceに紐づいたIAM Roleを使う方法」についてはノードごとに権限が付与されてしまうためPod単位の制御ができずセキュアでない、などの問題があります。それを解決するのが [IAM Roles for Service Accounts](https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html) を使う方法です。
 
 この後につながるので簡単に仕組みについて説明します。すでに知っている方は読み飛ばしてください。
