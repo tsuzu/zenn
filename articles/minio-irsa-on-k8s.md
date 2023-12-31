@@ -106,8 +106,8 @@ AWSのIAMにはAssume Role with Web IdentityというAPIがあり、外部のOpe
 
 詳細な動作については AWS公式の [Diving into IAM Roles for Service Accounts](https://aws.amazon.com/jp/blogs/containers/diving-into-iam-roles-for-service-accounts/) が詳細に書いているのでおすすめです。
 
-## MinIOでもIAM Roles for Service Accounts
-### 同一クラスタかつminio-operatorの場合
+# MinIOでもIAM Roles for Service Accounts
+## 同一クラスタかつminio-operatorの場合
 同じことがMinIOでもできるようになっています。同一クラスタ内に [minio-operator](https://github.com/minio/operator)を利用している場合は公式ドキュメントの [MinIO Operator STS: Native IAM Authentication for Kubernetes](https://github.com/minio/operator/tree/v5.0.11/examples/kustomization/sts-example)を参考に構築すれば動く(はず)です。ただ、私は試していないのでわかりません。
 
 
