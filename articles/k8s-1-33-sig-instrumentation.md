@@ -31,11 +31,11 @@ published: true # 公開設定（falseにすると下書き）
 ## API Changes
 * `/statusz` endpoint (件数が多いためまとめて紹介します)
 	* PRs
-		* Added a `/status` endpoint for kube-proxy ([#128989](https://github.com/kubernetes/kubernetes/pull/128989), [@Henrywu573](https://github.com/Henrywu573))
-		* Added a `/statusz` HTTP endpoint to the kube-scheduler. ([#128818](https://github.com/kubernetes/kubernetes/pull/128818), [@yongruilin](https://github.com/yongruilin))
-		* Added a `/statusz` HTTP endpoint to the kubelet. ([#128811](https://github.com/kubernetes/kubernetes/pull/128811), [@zhifei92](https://github.com/zhifei92))
-		* Added a `/statusz` endpoint for kube-controller-manager ([#128991](https://github.com/kubernetes/kubernetes/pull/128991), [@Henrywu573](https://github.com/Henrywu573))
-		* Added a `/statusz` endpoint for kube-scheduler ([#128987](https://github.com/kubernetes/kubernetes/pull/128987), [@Henrywu573](https://github.com/Henrywu573))
+		* kube-proxyに `/statusz` endpointが追加されました ([#128989](https://github.com/kubernetes/kubernetes/pull/128989), [@Henrywu573](https://github.com/Henrywu573))
+		* kube-schedulerに `/statusz` endpointが追加されました ([#128818](https://github.com/kubernetes/kubernetes/pull/128818), [@yongruilin](https://github.com/yongruilin))
+		* kubeletに `/statusz` endpointが追加されました ([#128811](https://github.com/kubernetes/kubernetes/pull/128811), [@zhifei92](https://github.com/zhifei92))
+		* kube-controller-managerに `/statusz` endpointが追加されました ([#128991](https://github.com/kubernetes/kubernetes/pull/128991), [@Henrywu573](https://github.com/Henrywu573))
+		* kube-schedulerに `/statusz` endpointが追加されています ([#128987](https://github.com/kubernetes/kubernetes/pull/128987), [@Henrywu573](https://github.com/Henrywu573))
 	* [KEP-4827: Component Statusz](https://github.com/kubernetes/enhancements/tree/master/keps/sig-instrumentation/4827-component-statusz) にて提案されている機能で、kube-scheduler、kubeletといった各Kubernetesのcomponentに `/statusz` エンドポイントを追加し、ビルドバージョン、Go のバージョンといった情報を返すようになりました。v1.33ではkube-apiserver以外でのサポートが追加されています。
 		* 詳細は [Kubernetes 1.32 SIG Instrumentation の変更内容](https://qiita.com/watawuwu/items/5280af2088bbc1a86aca#kep-4827-component-statusz)で紹介されています。
 		* Kubernetes v1.33 でも`ComponentStatusz` Feature Gateは引き続きalphaでデフォルトは無効化されています。
@@ -49,6 +49,20 @@ published: true # 公開設定（falseにすると下書き）
 	*  [KEP-4828: Component Flagz](https://github.com/kubernetes/enhancements/tree/master/keps/sig-instrumentation/4828-component-flagz) にて提案されている機能で、KEP-4827の様にkube-scheduler、kubeletといった各Kubernetesのcomponentに `/flagz` エンドポイントを追加し、コマンドラインのフラグといった情報を返すようになりました。v1.33ではkube-apiserver以外でのサポートが追加されています。
 		* 詳細は [Kubernetes 1.32 SIG Instrumentation の変更内容](https://qiita.com/watawuwu/items/5280af2088bbc1a86aca#kep-4828-component-flagz)で紹介されています。
 		* Kubernetes v1.33 でも`ComponentFlagz` Feature Gateは引き続きalphaでデフォルトは無効化されています。
+	* 📝 v1.32からフォーマットが変更されています。feature-gatesの値が表示されない問題があったようですが、修正されています。
+
+```diff
+kube-apiserver flags
+Warning: This endpoint is not meant to be machine parseable, has no formatting compatibility guarantees and is for debugging purposes only.
+
+admission-control=[]
+admission-control-config-file=
+advertise-address=172.18.0.2
+...
+- feature-gates 
++ feature-gates=:ComponentFlagz=true,:ComponentStatusz=true,:KubeletInUserNamespace=true
+...
+```
 
 * Device Resource Allocation(DRA)において、デバイスごとのtaints/tolerationを付与する機能が導入されました。これに際して2つのメトリクスが導入されています。 ([#130447](https://github.com/kubernetes/kubernetes/pull/130447), [@pohly](https://github.com/pohly))
 	* 🆕 `device_taint_eviction_controller_pod_deletions_total`
@@ -62,11 +76,14 @@ published: true # 公開設定（falseにすると下書き）
 	* 🆕 `declarative_validation_mismatch_panic_total`
 		* validationでpanicが発生した場合に報告されるメトリクスです。
 
-	
+
 ## Features
 * API serverのwatch cacheとetcdのデータに差異があるかを5分おきにチェックし、メトリクスとして報告されます([#130475](https://github.com/kubernetes/kubernetes/pull/130475), [@serathius](https://github.com/serathius), KEP‑4988)
 	* 🆕 `apiserver_storage_consistency_checks_total`
 		* labelとしてsuccess/failure/errorがあります。
+	* [`hash/fnv`](https://pkg.go.dev/hash/fnv) を利用してハッシュが計算されています。
+	* 現在ではListFromCacheSnapshot Feature Gateはalphaです。
+		* beta以降では自動的にキャッシュをバイパスするようになるそうです。
 * kube-apiserverのtracing機能で、認証済みなリクエストに対してヘッダで渡された既存のtrace idを引き継げるようになりました ([#127053](https://github.com/kubernetes/kubernetes/pull/127053), [@dashpole](https://github.com/dashpole))
 	* abuse防止のため、`system:master` または `system:monitoring` groupに所属しているユーザのみ利用できます。
 
