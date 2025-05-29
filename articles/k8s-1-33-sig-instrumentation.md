@@ -55,9 +55,12 @@ published: true # 公開設定（falseにすると下書き）
 kube-apiserver flags
 Warning: This endpoint is not meant to be machine parseable, has no formatting compatibility guarantees and is for debugging purposes only.
 
-admission-control=[]
-admission-control-config-file=
-advertise-address=172.18.0.2
+- admission-control []
++ admission-control=[]
+- admission-control-config-file 
++ admission-control-config-file=
+- advertise-address 172.18.0.2
++ advertise-address=172.18.0.2
 ...
 - feature-gates 
 + feature-gates=:ComponentFlagz=true,:ComponentStatusz=true,:KubeletInUserNamespace=true
