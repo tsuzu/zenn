@@ -159,6 +159,7 @@ published: true # 公開設定（falseにすると下書き）
 現在 `deprecatedVersion` に記載された次のマイナーバージョンではメトリクスが無効化されることを示しているようです。これはメトリクスのstabilityに関わらず同じ挙動となっています。 (ref: [Deprecating a metric](https://kubernetes.io/docs/reference/using-api/deprecation-policy/#deprecating-a-metric))
 
 この挙動については [#133429](https://github.com/kubernetes/kubernetes/issues/133429) にて修正が予定されており、1.35ではメトリクスのstability levelに応じたdeprecationが行われるようです。
+現時点で [apiserver_storage_objects](#apiserver_storage_objects) にdeprecatedVersionが入っておらず、Helpメッセージのみの修正なのはそういった背景があります。
 :::
 
 ## Summary
