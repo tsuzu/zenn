@@ -155,6 +155,12 @@ published: true # 公開設定（falseにすると下書き）
 今回から自動生成したメトリクスの差分の一覧を掲載するようにしました。
 実装はこちらにありますので表示形式などフィードバックがあれば歓迎いたします。 https://github.com/tsuzu/k8s-metrics-changes
 
+:::message
+現在 `deprecatedVersion` は非推奨になったことを示すバージョンではなく、この次のマイナーバージョンではメトリクスが削除されることを示しているようです。これはメトリクスのstabilityに関わらず同じ挙動となっています。 (ref: [Deprecating a metric](https://kubernetes.io/docs/reference/using-api/deprecation-policy/#deprecating-a-metric)
+
+この挙動については [#133429](https://github.com/kubernetes/kubernetes/issues/133429) にて修正が予定されており、1.35ではメトリクスのstability levelに応じたdeprecationが行われるようです。
+:::
+
 ## Summary
 - **Added**: 26 metrics
 - **Removed**: 7 metrics
