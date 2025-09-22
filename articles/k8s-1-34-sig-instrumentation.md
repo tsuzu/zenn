@@ -114,7 +114,7 @@ published: true # 公開設定（falseにすると下書き）
 - `kubelet_container_resize_requests_total` メトリクスについて全てのresize関連の更新が記録がされるようになりました ([#133060](https://github.com/kubernetes/kubernetes/pull/133060), [@natasha41575](https://github.com/natasha41575))
 	- resizeがpendingの最中に再度resizeを上書きした際にも記録されるようになるようです。
 
-- apiserverのconfig読み込みに関するメトリクスが追加されました ([#132299](https://github.com/kubernetes/kubernetes/pull/132299), [@aramase](https://github.com/aramase))
+- kube-apiserverのconfig読み込みに関するメトリクスが追加されました ([#132299](https://github.com/kubernetes/kubernetes/pull/132299), [@aramase](https://github.com/aramase))
 	- 🆕 `apiserver_authentication_config_controller_last_config_info`:  authentication configuration fileの読み込み成功時
 	- 🆕 `apiserver_authorization_config_controller_last_config_info`: authorization configuration fileの読み込み成功時
 	- 🆕 `apiserver_encryption_config_controller_last_config_info`: encryption configuration fileの読み込み成功時
@@ -135,11 +135,11 @@ published: true # 公開設定（falseにすると下書き）
 ## Other (Cleanup or Flake)
 - 🆙 mutaging webhookからのレスポンスのdecodeに失敗した際に失敗(failure)として扱い、failurePolicyが適用され、 `webhook_fail_open_count` メトリクスにカウントされるようになりました ([#131627](https://github.com/kubernetes/kubernetes/pull/131627), [@dims](https://github.com/dims))
 
-* apiserverの `authentication_config_controller` の自動configリロード関連のメトリクスがBETAに昇格しました ([#131798](https://github.com/kubernetes/kubernetes/pull/131798), [@aramase](https://github.com/aramase))
+* kube-apiserverの `authentication_config_controller` の自動configリロード関連のメトリクスがBETAに昇格しました ([#131798](https://github.com/kubernetes/kubernetes/pull/131798), [@aramase](https://github.com/aramase))
   * `apiserver_authentication_config_controller_automatic_reloads_total`
   * `apiserver_authentication_config_controller_automatic_reload_last_timestamp_seconds`
 
-* apiserverの `authorization_config_controller` の自動configリロード関連のメトリクスがBETAに昇格しました ([#131768](https://github.com/kubernetes/kubernetes/pull/131768), [@aramase](https://github.com/aramase))
+* kube-apiserverの `authorization_config_controller` の自動configリロード関連のメトリクスがBETAに昇格しました ([#131768](https://github.com/kubernetes/kubernetes/pull/131768), [@aramase](https://github.com/aramase))
   * `apiserver_authorization_config_controller_automatic_reloads_total`
   * `apiserver_authorization_config_controller_automatic_reload_last_timestamp_seconds`
 
