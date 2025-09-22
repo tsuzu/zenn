@@ -25,8 +25,35 @@ published: true # 公開設定（falseにすると下書き）
 # Changes by kind
 ## Upgrade Notes
 * APIサーバーのメトリクスにおいて、API groupを抽出して新しい `group` ラベルとして追加されました ([#131845](https://github.com/kubernetes/kubernetes/pull/131845), [@serathius](https://github.com/serathius))
-  * 🆙 対象メトリクス: `apiserver_request_body_size_bytes`, `apiserver_storage_events_received_total`, `apiserver_storage_list_evaluated_objects_total`, `apiserver_storage_list_fetched_objects_total`, `apiserver_storage_list_returned_objects_total`, `apiserver_storage_list_total`, `apiserver_watch_cache_events_dispatched_total`, `apiserver_watch_cache_events_received_total`, `apiserver_watch_cache_initializations_total`, `apiserver_watch_cache_resource_version`, `watch_cache_capacity`, `apiserver_init_events_total`, `apiserver_terminated_watchers_total`, `watch_cache_capacity_increase_total`, `watch_cache_capacity_decrease_total`, `apiserver_watch_cache_read_wait_seconds`, `apiserver_watch_cache_consistent_read_total`, `apiserver_storage_consistency_checks_total`, `etcd_bookmark_counts`, `storage_decode_errors_total`
-  * これらのメトリクスにて `resource` ラベルからAPI groupを抽出し、新しい `group` ラベルとして追加されました
+  * 🆙 対象メトリクス:
+  	 * `apiserver_request_body_size_bytes`
+  	 * `apiserver_storage_events_received_total`
+  	 * `apiserver_storage_list_evaluated_objects_total`
+  	 * `apiserver_storage_list_fetched_objects_total`
+  	 * `apiserver_storage_list_returned_objects_total`
+  	 * `apiserver_storage_list_total`
+  	 * `apiserver_watch_cache_events_dispatched_total`
+  	 * `apiserver_watch_cache_events_received_total`
+  	 * `apiserver_watch_cache_initializations_total`
+  	 * `apiserver_watch_cache_resource_version`
+  	 * `watch_cache_capacity`
+  	 * `apiserver_init_events_total`
+  	 * `apiserver_terminated_watchers_total`
+  	 * `watch_cache_capacity_increase_total`
+  	 * `watch_cache_capacity_decrease_total`
+  	 * `apiserver_watch_cache_read_wait_seconds`
+  	 * `apiserver_watch_cache_consistent_read_total`
+  	 * `apiserver_storage_consistency_checks_total`
+  	 * `etcd_bookmark_counts`
+  	 * `storage_decode_errors_total`
+	 * `apiserver_cache_list_fetched_objects_total`
+	 * `apiserver_cache_list_returned_objects_total`
+	 * `apiserver_cache_list_total`
+	 * `etcd_request_duration_seconds`
+	 * `etcd_requests_total`
+	 * `etcd_request_errors_total`
+	 * `apiserver_selfrequest_total`
+  * リソースを表すlabelが `group` `resource` に統一されました
 
 ## Deprecation
 * ⚠️ `apiserver_storage_objects` が非推奨となり、`apiserver_resource_objects` メトリクスで置き換えられました ([#132965](https://github.com/kubernetes/kubernetes/pull/132965), [@serathius](https://github.com/serathius))
@@ -60,12 +87,39 @@ published: true # 公開設定（falseにすると下書き）
 * 🆕 kubeletに `dra_resource_claims_in_use` メトリクスが追加されました ([#131641](https://github.com/kubernetes/kubernetes/pull/131641), [@pohly](https://github.com/pohly))
   * アクティブな `ResourceClaims` を全体およびドライバー別に報告します
 
-* 🆕 `resourceclaim_controller_resource_claims` メトリクスが追加されました ([#132800](https://github.com/kubernetes/kubernetes/pull/132800), [@ritazh](https://github.com/ritazh))
-  * `admin_access` (true または false), `allocated` (true または false) のラベルで現在の `ResourceClaims` 数を追跡します
+- 🆕 in-place Pod resizeに関連するメトリクスが追加されました ([#132903](https://github.com/kubernetes/kubernetes/pull/132903), [@natasha41575](https://github.com/natasha41575))
+	* 🆕 `kubelet_container_requested_resizes_total`
+	* 🆕 `kubelet_pod_resize_duration_milliseconds`
+	* 🆕 `kubelet_pod_pending_resizes`
+	* 🆕 `kubelet_pod_infeasible_resizes_total`
+	* 🆕 `kubelet_pod_in_progress_resizes`
+	* 🆕 `kubelet_pod_deferred_accepted_resizes_total`
 
+- `ResourceClaims` について、admin accessの有無で分類可能なメトリクスが追加されました
+	- 🆕 `resourceclaim_controller_creates_total`: Podによる `ResourceClaims` の作成要求の総数及び `status`
+	- 🆕 `resourceclaim_controller_resource_claims` ：現在の `ResourceClaims` の数及び確保済みかどうか
+
+- kube-schedulerでのAPI呼び出しを非同期にする `SchedulerAsyncAPICalls` feature gate が有効化されている際に利用可能な3つのメトリクスが追加されました ([#133120](https://github.com/kubernetes/kubernetes/pull/133120), [@utam0k](https://github.com/utam0k))
+	- 🆕 `scheduler_async_api_call_execution_total`: 実行された API コールをコールタイプと結果（成功/エラー）ごとに追跡します
+	- 🆕 `scheduler_async_api_call_duration_seconds`: 非同期API呼び出しにかかった時間のヒストグラム
+	- 🆕 `scheduler_pending_async_api_calls`: QueueにあるpendingのAPI呼び出しの数
+
+* 🆕 swapBehaviorが `LimitedSwap` の際にコンテナに割り当てられるスワップ制限値を確認できる `container_swap_limit_bytes` メトリクスが追加されました。 ([#132348](https://github.com/kubernetes/kubernetes/pull/132348), [@iholder101](https://github.com/iholder101))
+
+- kubeletが credential provider configurationのhashを `kubelet_credential_provider_config_info` メトリクスで扱えるようになりました。  `hash` labelで確認できます。 ([#133016](https://github.com/kubernetes/kubernetes/pull/133016), [@aramase](https://github.com/aramase))
+
+## Documentation
+* SIG/Instrumentationに関連する項目はありませんでした
+
+## Bug or Regression
 * `apiserver_admission_webhook_rejection_count` の誤解を招く応答コードが修正されました ([#132165](https://github.com/kubernetes/kubernetes/pull/132165), [@gavinkflam](https://github.com/gavinkflam))
 	* Mutating WebhookのREST Clientを取得する処理がエラーになった際、5XX系を返すべきところで4XX系が返っており、misleadingとなっていました。
 	* それに伴い、 `apiserver_admission_webhook_rejection_count` メトリクスの集計方法も一部修正されています。
+
+- swap関連のメトリクスが  `/metrics/resource` エンドポイントで取得できなかった問題が修正されました ([#132065](https://github.com/kubernetes/kubernetes/pull/132065), [@yuanwang04](https://github.com/yuanwang04))
+
+## Other (Cleanup or Flake)
+- 🆙 mutaging webhookからのレスポンスのdecodeに失敗した際に失敗(failure)として扱い、failurePolicyが適用され、 `webhook_fail_open_count` メトリクスにカウントされるようになりました ([#131627](https://github.com/kubernetes/kubernetes/pull/131627), [@dims](https://github.com/dims))
 
 * apiserverの `authentication_config_controller` の自動configリロード関連のメトリクスがBETAに昇格しました ([#131798](https://github.com/kubernetes/kubernetes/pull/131798), [@aramase](https://github.com/aramase))
   * `apiserver_authentication_config_controller_automatic_reloads_total`
@@ -75,14 +129,13 @@ published: true # 公開設定（falseにすると下書き）
   * `apiserver_authorization_config_controller_automatic_reloads_total`
   * `apiserver_authorization_config_controller_automatic_reload_last_timestamp_seconds`
 
-## Documentation
-* SIG/Instrumentationに関連する項目はありませんでした
+- kube-apiserverのencryption configに関する非推奨のメトリクスが削除されました ([#132238](https://github.com/kubernetes/kubernetes/pull/132238), [@aramase](https://github.com/aramase))
+	- 🆑 `apiserver_encryption_config_controller_automatic_reload_success_total`  
+	- 🆑 `apiserver_encryption_config_controller_automatic_reload_failure_total`
+	- 代わりに `apiserver_encryption_config_controller_automatic_reloads_total` を利用してください
 
-## Bug or Regression
-* SIG/Instrumentationに関連する項目はありませんでした
-
-## Other (Cleanup or Flake)
-* SIG/Instrumentationに関連する項目はありませんでした
+- 🆑 kube-schedulerの非推奨メトリクス `scheduler_scheduler_cache_size` が削除されました ([#131425](https://github.com/kubernetes/kubernetes/pull/131425), [@carlory](https://github.com/carlory))
+	- 代わりに `scheduler_cache_size` を利用してください
 
 # Kubernetes Metrics Changes: v1.33.0 → v1.34.0
 今回から自動生成したメトリクスの差分の一覧を掲載するようにしました。
@@ -172,8 +225,8 @@ published: true # 公開設定（falseにすると下書き）
 ### apiserver_authentication_config_controller_automatic_reload_last_timestamp_seconds
 ```diff
  - name: automatic_reload_last_timestamp_seconds
-   namespace: apiserver
    subsystem: authentication_config_controller
+   namespace: apiserver
    help: Timestamp of the last automatic reload of authentication configuration split by status and apiserver identity.
    type: Gauge
 -  stabilityLevel: ALPHA
@@ -186,8 +239,8 @@ published: true # 公開設定（falseにすると下書き）
 ### apiserver_authentication_config_controller_automatic_reloads_total
 ```diff
  - name: automatic_reloads_total
-   namespace: apiserver
    subsystem: authentication_config_controller
+   namespace: apiserver
    help: Total number of automatic reloads of authentication configuration split by status and apiserver identity.
    type: Counter
 -  stabilityLevel: ALPHA
@@ -211,8 +264,8 @@ published: true # 公開設定（falseにすると下書き）
 ### apiserver_authorization_config_controller_automatic_reload_last_timestamp_seconds
 ```diff
  - name: automatic_reload_last_timestamp_seconds
-   namespace: apiserver
    subsystem: authorization_config_controller
+   namespace: apiserver
    help: Timestamp of the last automatic reload of authorization configuration split by status and apiserver identity.
    type: Gauge
 -  stabilityLevel: ALPHA
@@ -225,8 +278,8 @@ published: true # 公開設定（falseにすると下書き）
 ### apiserver_authorization_config_controller_automatic_reloads_total
 ```diff
  - name: automatic_reloads_total
-   namespace: apiserver
    subsystem: authorization_config_controller
+   namespace: apiserver
    help: Total number of automatic reloads of authorization configuration split by status and apiserver identity.
    type: Counter
 -  stabilityLevel: ALPHA
@@ -291,10 +344,11 @@ published: true # 公開設定（falseにすると下書き）
 ### apiserver_encryption_config_controller_automatic_reload_failures_total
 ```diff
 -- name: automatic_reload_failures_total
--  namespace: apiserver
 -  subsystem: encryption_config_controller
+-  namespace: apiserver
 -  help: Total number of failed automatic reloads of encryption configuration split by apiserver identity.
 -  type: Counter
+-  deprecatedVersion: 1.30.0
 -  stabilityLevel: ALPHA
 -  labels:
 -    - apiserver_id_hash
@@ -303,10 +357,11 @@ published: true # 公開設定（falseにすると下書き）
 ### apiserver_encryption_config_controller_automatic_reload_success_total
 ```diff
 -- name: automatic_reload_success_total
--  namespace: apiserver
 -  subsystem: encryption_config_controller
+-  namespace: apiserver
 -  help: Total number of successful automatic reloads of encryption configuration split by apiserver identity.
 -  type: Counter
+-  deprecatedVersion: 1.30.0
 -  stabilityLevel: ALPHA
 -  labels:
 -    - apiserver_id_hash
@@ -326,8 +381,8 @@ published: true # 公開設定（falseにすると下書き）
 ### apiserver_flowcontrol_work_estimated_seats
 ```diff
  - name: work_estimated_seats
-   namespace: apiserver
    subsystem: flowcontrol
+   namespace: apiserver
    help: Number of estimated seats (maximum of initial and final seats) associated with requests in API Priority and Fairness
    type: Histogram
    stabilityLevel: ALPHA
@@ -361,8 +416,8 @@ published: true # 公開設定（falseにすると下書き）
 ### apiserver_mutating_admission_policy_check_duration_seconds
 ```diff
 +- name: check_duration_seconds
-+  namespace: apiserver
 +  subsystem: mutating_admission_policy
++  namespace: apiserver
 +  help: Mutation admission latency for individual mutation expressions in seconds, labeled by policy and binding.
 +  type: Histogram
 +  stabilityLevel: ALPHA
@@ -381,8 +436,8 @@ published: true # 公開設定（falseにすると下書き）
 ### apiserver_mutating_admission_policy_check_total
 ```diff
 +- name: check_total
-+  namespace: apiserver
 +  subsystem: mutating_admission_policy
++  namespace: apiserver
 +  help: Mutation admission policy check total, labeled by policy and further identified by binding.
 +  type: Counter
 +  stabilityLevel: ALPHA
@@ -580,8 +635,8 @@ published: true # 公開設定（falseにすると下書き）
 ### apiserver_watch_cache_consistent_read_total
 ```diff
  - name: consistent_read_total
-   namespace: apiserver
    subsystem: watch_cache
+   namespace: apiserver
    help: Counter for consistent reads from cache.
    type: Counter
    stabilityLevel: ALPHA
@@ -595,8 +650,8 @@ published: true # 公開設定（falseにすると下書き）
 ### apiserver_watch_cache_events_dispatched_total
 ```diff
  - name: events_dispatched_total
-   namespace: apiserver
    subsystem: watch_cache
+   namespace: apiserver
    help: Counter of events dispatched in watch cache broken by resource type.
    type: Counter
    stabilityLevel: ALPHA
@@ -608,8 +663,8 @@ published: true # 公開設定（falseにすると下書き）
 ### apiserver_watch_cache_events_received_total
 ```diff
  - name: events_received_total
-   namespace: apiserver
    subsystem: watch_cache
+   namespace: apiserver
    help: Counter of events received in watch cache broken by resource type.
    type: Counter
    stabilityLevel: ALPHA
@@ -621,8 +676,8 @@ published: true # 公開設定（falseにすると下書き）
 ### apiserver_watch_cache_initializations_total
 ```diff
  - name: initializations_total
-   namespace: apiserver
    subsystem: watch_cache
+   namespace: apiserver
    help: Counter of watch cache initializations broken by resource type.
    type: Counter
    stabilityLevel: ALPHA
@@ -634,8 +689,8 @@ published: true # 公開設定（falseにすると下書き）
 ### apiserver_watch_cache_read_wait_seconds
 ```diff
  - name: read_wait_seconds
-   namespace: apiserver
    subsystem: watch_cache
+   namespace: apiserver
    help: Histogram of time spent waiting for a watch cache to become fresh.
    type: Histogram
    stabilityLevel: ALPHA
@@ -661,8 +716,8 @@ published: true # 公開設定（falseにすると下書き）
 ### apiserver_watch_cache_resource_version
 ```diff
  - name: resource_version
-   namespace: apiserver
    subsystem: watch_cache
+   namespace: apiserver
    help: Current resource version of watch cache broken by resource type.
    type: Gauge
    stabilityLevel: ALPHA
@@ -1074,6 +1129,7 @@ published: true # 公開設定（falseにすると下書き）
 -  subsystem: scheduler
 -  help: Number of nodes, pods, and assumed (bound) pods in the scheduler cache.
 -  type: Gauge
+-  deprecatedVersion: 1.33.0
 -  stabilityLevel: ALPHA
 -  labels:
 -    - type
