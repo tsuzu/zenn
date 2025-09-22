@@ -106,7 +106,21 @@ published: true # 公開設定（falseにすると下書き）
 
 * 🆕 swapBehaviorが `LimitedSwap` の際にコンテナに割り当てられるスワップ制限値を確認できる `container_swap_limit_bytes` メトリクスが追加されました。 ([#132348](https://github.com/kubernetes/kubernetes/pull/132348), [@iholder101](https://github.com/iholder101))
 
+- Added a warning when alpha metrics are used with emulated versions. ([#132276](https://github.com/kubernetes/kubernetes/pull/132276), [@michaelasp](https://github.com/michaelasp)) [SIG API Machinery and Architecture] [sig/api-machinery,sig/architecture]
+- `KubeletCgroupDriverFromCRI` feature gateがGAとなり、サポートが切れたCRI実装を追跡できるメトリクスが追加されました. ([#133157](https://github.com/kubernetes/kubernetes/pull/133157), [@haircommander](https://github.com/haircommander))
+	- 🆕 `kubelet_cri_losing_support` 
+		- `version` labelがKubernetesのバージョンです
+
+- `kubelet_container_resize_requests_total` メトリクスについて全てのresize関連の更新が記録がされるようになりました ([#133060](https://github.com/kubernetes/kubernetes/pull/133060), [@natasha41575](https://github.com/natasha41575))
+	- resizeがpendingの最中に再度resizeを上書きした際にも記録されるようになるようです。
+
+- apiserverのconfig読み込みに関するメトリクスが追加されました ([#132299](https://github.com/kubernetes/kubernetes/pull/132299), [@aramase](https://github.com/aramase))
+	- 🆕 `apiserver_authentication_config_controller_last_config_info`:  authentication configuration fileの読み込み成功時
+	- 🆕 `apiserver_authorization_config_controller_last_config_info`: authorization configuration fileの読み込み成功時
+	- 🆕 `apiserver_encryption_config_controller_last_config_info`: encryption configuration fileの読み込み成功時
+
 - kubeletが credential provider configurationのhashを `kubelet_credential_provider_config_info` メトリクスで扱えるようになりました。  `hash` labelで確認できます。 ([#133016](https://github.com/kubernetes/kubernetes/pull/133016), [@aramase](https://github.com/aramase))
+	- おそらくセキュリティ観点での監視が目的?
 
 ## Documentation
 * SIG/Instrumentationに関連する項目はありませんでした
