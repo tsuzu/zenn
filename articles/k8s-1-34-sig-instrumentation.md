@@ -140,9 +140,11 @@ watch_cache_capacity {group="apiregistration.k8s.io",resource="apiservices"}
 
 ## Features
 * 🆕 APIサーバーに `apiserver_resource_size_estimate_bytes` メトリクスが追加されました ([#132893](https://github.com/kubernetes/kubernetes/pull/132893), [@serathius](https://github.com/serathius))
-	* https://github.com/kubernetes/kubernetes/issues/132233
+	* [Tune APF list work estimator for large responses #132233](https://github.com/kubernetes/kubernetes/issues/132233) のside-workとして実現されました。
 
-* 🆕 compatibility versioning のアルファメトリクスが追加されました ([#131842](https://github.com/kubernetes/kubernetes/pull/131842), [@michaelasp](https://github.com/michaelasp))
+
+* 🆕 compatibility versioning の `version_info` メトリクスが追加されました ([#131842](https://github.com/kubernetes/kubernetes/pull/131842), [@michaelasp](https://github.com/michaelasp))
+
 
 * 🆕 `DetectCacheInconsistency` feature gate が追加され、APIサーバーがキャッシュとetcd間の整合性を定期的に検証できるようになりました ([#132884](https://github.com/kubernetes/kubernetes/pull/132884), [@serathius](https://github.com/serathius))
   * 不整合は `apiserver_storage_consistency_checks_total` メトリクスで報告されます
