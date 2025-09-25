@@ -55,6 +55,70 @@ published: true # 公開設定（falseにすると下書き）
 	 * `apiserver_selfrequest_total`
   * リソースを表すlabelが `group` `resource` に統一されました
 
+:::details 詳細
+
+Before:
+```
+apiserver_cache_list_fetched_objects_total {index="",resource_prefix="/apiregistration.k8s.io/apiservices"}
+apiserver_cache_list_returned_objects_total {resource_prefix="/apiregistration.k8s.io/apiservices"}
+apiserver_cache_list_total {index="",resource_prefix="/apiregistration.k8s.io/apiservices"}
+apiserver_longrunning_requests {component="apiserver",group="apiregistration.k8s.io",resource="apiservices",scope="cluster",subresource="",verb="WATCH",version="v1"}
+apiserver_request_body_size_bytes_count {resource="apiservices.apiregistration.k8s.io",verb="create"}
+apiserver_request_duration_seconds_count {component="apiserver",dry_run="",group="apiregistration.k8s.io",resource="apiservices",scope="resource",subresource="",verb="POST",version="v1"}
+apiserver_request_sli_duration_seconds_count {component="apiserver",group="apiregistration.k8s.io",resource="apiservices",scope="resource",subresource="",verb="POST",version="v1"}
+apiserver_request_total {code="201",component="apiserver",dry_run="",group="apiregistration.k8s.io",resource="apiservices",scope="resource",subresource="",verb="POST",version="v1"}
+apiserver_response_sizes_count {component="apiserver",group="apiregistration.k8s.io",resource="apiservices",scope="cluster",subresource="",verb="LIST",version="v1"}
+apiserver_selfrequest_total {resource="apiservices",subresource="",verb="POST"}
+apiserver_storage_events_received_total {resource="apiservices.apiregistration.k8s.io"}
+apiserver_storage_list_evaluated_objects_total {resource="apiservices.apiregistration.k8s.io"}
+apiserver_storage_list_fetched_objects_total {resource="apiservices.apiregistration.k8s.io"}
+apiserver_storage_list_returned_objects_total {resource="apiservices.apiregistration.k8s.io"}
+apiserver_storage_list_total {resource="apiservices.apiregistration.k8s.io"}
+apiserver_storage_objects {resource="apiservices.apiregistration.k8s.io"}
+apiserver_watch_cache_events_dispatched_total {resource="apiservices.apiregistration.k8s.io"}
+apiserver_watch_cache_events_received_total {resource="apiservices.apiregistration.k8s.io"}
+apiserver_watch_cache_initializations_total {resource="apiservices.apiregistration.k8s.io"}
+apiserver_watch_cache_resource_version {resource="apiservices.apiregistration.k8s.io"}
+apiserver_watch_events_sizes_count {group="apiregistration.k8s.io",kind="APIService",version="v1"}
+apiserver_watch_events_total {group="apiregistration.k8s.io",kind="APIService",version="v1"}
+etcd_request_duration_seconds_count {operation="listWithCount",type="/registry/apiregistration.k8s.io/apiservices/"}
+etcd_requests_total {operation="listWithCount",type="/registry/apiregistration.k8s.io/apiservices/"}
+watch_cache_capacity {resource="apiservices.apiregistration.k8s.io"}
+```
+
+After:
+
+```
+apiserver_cache_list_fetched_objects_total {group="apiregistration.k8s.io",index="",resource="apiservices"}
+apiserver_cache_list_returned_objects_total {group="apiregistration.k8s.io",resource="apiservices"}
+apiserver_cache_list_total {group="apiregistration.k8s.io",index="",resource="apiservices"}
+apiserver_longrunning_requests {component="apiserver",group="apiregistration.k8s.io",resource="apiservices",scope="cluster",subresource="",verb="WATCH",version="v1"}
+apiserver_request_body_size_bytes_count {group="apiregistration.k8s.io",resource="apiservices",verb="create"}
+apiserver_request_duration_seconds_count {component="apiserver",dry_run="",group="apiregistration.k8s.io",resource="apiservices",scope="resource",subresource="",verb="POST",version="v1"}
+apiserver_request_sli_duration_seconds_count {component="apiserver",group="apiregistration.k8s.io",resource="apiservices",scope="resource",subresource="",verb="POST",version="v1"}
+apiserver_request_total {code="201",component="apiserver",dry_run="",group="apiregistration.k8s.io",resource="apiservices",scope="resource",subresource="",verb="POST",version="v1"}
+apiserver_response_sizes_count {component="apiserver",group="apiregistration.k8s.io",resource="apiservices",scope="cluster",subresource="",verb="WATCH",version="v1"}
+apiserver_selfrequest_total {group="apiregistration.k8s.io",resource="apiservices",subresource="",verb="WATCH"}
+apiserver_storage_events_received_total {group="apiregistration.k8s.io",resource="apiservices"}
+apiserver_storage_list_evaluated_objects_total {group="apiregistration.k8s.io",resource="apiservices"}
+apiserver_storage_list_fetched_objects_total {group="apiregistration.k8s.io",resource="apiservices"}
+apiserver_storage_list_returned_objects_total {group="apiregistration.k8s.io",resource="apiservices"}
+apiserver_storage_list_total {group="apiregistration.k8s.io",resource="apiservices"}
+apiserver_storage_objects {resource="apiservices.apiregistration.k8s.io"}
+apiserver_watch_cache_events_dispatched_total {group="apiregistration.k8s.io",resource="apiservices"}
+apiserver_watch_cache_events_received_total {group="apiregistration.k8s.io",resource="apiservices"}
+apiserver_watch_cache_initializations_total {group="apiregistration.k8s.io",resource="apiservices"}
+apiserver_watch_cache_resource_version {group="apiregistration.k8s.io",resource="apiservices"}
+apiserver_watch_events_sizes_count {group="apiregistration.k8s.io",resource="apiservices",version="v1"}
+apiserver_watch_events_total {group="apiregistration.k8s.io",resource="apiservices",version="v1"}
+etcd_bookmark_counts {group="apiregistration.k8s.io",resource="apiservices"}
+etcd_request_duration_seconds_count {group="apiregistration.k8s.io",operation="listWithCount",resource="apiservices"}
+etcd_requests_total {group="apiregistration.k8s.io",operation="listWithCount",resource="apiservices"}
+watch_cache_capacity {group="apiregistration.k8s.io",resource="apiservices"}
+```
+
+:::
+
 ## Deprecation
 * ⚠️ `apiserver_storage_objects` が非推奨となり、`apiserver_resource_objects` メトリクスで置き換えられました ([#132965](https://github.com/kubernetes/kubernetes/pull/132965), [@serathius](https://github.com/serathius))
   * 他のメトリクスと一致するラベルを使用します
@@ -106,10 +170,10 @@ published: true # 公開設定（falseにすると下書き）
 
 * 🆕 swapBehaviorが `LimitedSwap` の際にコンテナに割り当てられるスワップ制限値を確認できる `container_swap_limit_bytes` メトリクスが追加されました。 ([#132348](https://github.com/kubernetes/kubernetes/pull/132348), [@iholder101](https://github.com/iholder101))
 
-- Added a warning when alpha metrics are used with emulated versions. ([#132276](https://github.com/kubernetes/kubernetes/pull/132276), [@michaelasp](https://github.com/michaelasp)) [SIG API Machinery and Architecture] [sig/api-machinery,sig/architecture]
 - `KubeletCgroupDriverFromCRI` feature gateがGAとなり、サポートが切れたCRI実装を追跡できるメトリクスが追加されました. ([#133157](https://github.com/kubernetes/kubernetes/pull/133157), [@haircommander](https://github.com/haircommander))
 	- 🆕 `kubelet_cri_losing_support` 
 		- `version` labelがKubernetesのバージョンです
+    - [Discover cgroup driver from CRI #4033](https://github.com/kubernetes/enhancements/issues/4033) に関連し、RuntimeConfigに対応していない場合は `version` labelが `1.36.0` の固定値でインクリメントされます。
 
 - `kubelet_container_resize_requests_total` メトリクスについて全てのresize関連の更新が記録がされるようになりました ([#133060](https://github.com/kubernetes/kubernetes/pull/133060), [@natasha41575](https://github.com/natasha41575))
 	- resizeがpendingの最中に再度resizeを上書きした際にも記録されるようになるようです。
@@ -118,9 +182,10 @@ published: true # 公開設定（falseにすると下書き）
 	- 🆕 `apiserver_authentication_config_controller_last_config_info`:  authentication configuration fileの読み込み成功時
 	- 🆕 `apiserver_authorization_config_controller_last_config_info`: authorization configuration fileの読み込み成功時
 	- 🆕 `apiserver_encryption_config_controller_last_config_info`: encryption configuration fileの読み込み成功時
+	- コンフィグファイルのhashは `hash` labelで確認できます。
+    - おそらくセキュリティ観点での監視や、更新時の完了確認が目的?
 
 - kubeletが credential provider configurationのhashを `kubelet_credential_provider_config_info` メトリクスで扱えるようになりました。  `hash` labelで確認できます。 ([#133016](https://github.com/kubernetes/kubernetes/pull/133016), [@aramase](https://github.com/aramase))
-	- おそらくセキュリティ観点での監視が目的?
 
 ## Documentation
 * SIG/Instrumentationに関連する項目はありませんでした
