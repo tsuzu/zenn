@@ -12,16 +12,7 @@ published: false # 公開設定（falseにすると下書き）
 * [Kubernetes 1.31 SIG Instrumentation の変更内容](https://qiita.com/watawuwu/items/ae739b0a2085bd16c0f9)
 * [Kubernetes 1.32 SIG Instrumentation の変更内容](https://qiita.com/watawuwu/items/5280af2088bbc1a86aca)
 * [Kubernetes 1.33: SIG-Instrumentationの変更内容](https://zenn.dev/tsuzu/articles/k8s-1-33-sig-instrumentation)
-* [Kubernetes 1.33: SIG-Instrumentationの変更内容](https://zenn.dev/tsuzu/articles/k8s-1-34-sig-instrumentation)
-
-:::message
-メトリクス名の横に絵文字で変更の種類を記載しています。
-
-* 🆕: 新規で追加されたメトリクス
-* 🆙: ラベルなどに更新があったメトリクス
-* ⚠️: 非推奨になったメトリクス
-* 🆑: 削除になったメトリクス
-:::
+* [Kubernetes 1.34: SIG-Instrumentationの変更内容](https://zenn.dev/tsuzu/articles/k8s-1-34-sig-instrumentation)
 
 # Changes by kind
 ## Upgrade Notes
