@@ -7,7 +7,7 @@ published: false # 公開設定（falseにすると下書き）
 ---
 
 # はじめに
-本記事では Kubernetes v1.34 の [Changelog](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.35.md) から、SIG-Instrumentation 関連及びメトリクスの変更点について取り上げ、まとめています。
+本記事では Kubernetes v1.35 の [Changelog](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.35.md) から、SIG-Instrumentation 関連及びメトリクスの変更点について取り上げ、まとめています。
 
 * [Kubernetes 1.31 SIG Instrumentation の変更内容](https://qiita.com/watawuwu/items/ae739b0a2085bd16c0f9)
 * [Kubernetes 1.32 SIG Instrumentation の変更内容](https://qiita.com/watawuwu/items/5280af2088bbc1a86aca)
