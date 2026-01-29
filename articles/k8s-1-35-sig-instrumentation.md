@@ -120,11 +120,11 @@ Added the `scheduler_resourceclaim_creates_total` metric for `DRAExtendedResourc
 
 - Metrics: Excluded `dryRun` requests from `apiserver_request_sli_duration_seconds`. ([#131092](https://github.com/kubernetes/kubernetes/pull/131092), [@aldudko](https://github.com/aldudko)) [SIG API Machinery and Instrumentation] [sig/api-machinery,sig/instrumentation]
   * `apiserver_request_sli_duration_seconds` metricsから `--dry-run=server` 等でdry-runリクエストが除外されるようになりました。
-    * このmetricsを用いてS監視している場合値が悪化する可能性があります。
+    * このmetricsを用いてSLI監視している場合値が悪化する可能性があります。
 
 - Moved the Pod Certificates feature to beta. Added `UserAnnotations` to the `PodCertificateProjection` API and `UnverifiedUserAnnotations` to the `PodCertificateRequest` API. The `PodCertificateRequest` feature gate remains disabled by default and requires enabling the v1beta1 certificates API groups. ([#134790](https://github.com/kubernetes/kubernetes/pull/134790), [@yt2985](https://github.com/yt2985)) [SIG Auth, Instrumentation and Testing] [sig/auth,sig/instrumentation,sig/testing]
   * [kubelet_podcertificate_states](#kubelet_podcertificate_states)
-  * KEP-4317: Pod Certificatesで導入されたPodCertificateProjectionがBetaに昇格するにあたり、kubeletがprojecterd volumeとしてmountされた証明書についての情報をreportするようになりました。
+  * KEP-4317: Pod Certificatesで導入されたPodCertificateProjectionがBetaに昇格するにあたり、kubeletがprojected volumeとしてmountされた証明書についての情報をreportするようになりました。
     * stateは以下の5種類を取ります。
       * `fresh`: 証明書は最新です
       * `overdue_for_refresh`: 現在時刻は、最後に発行された証明書の beginRefreshAt タイムスタンプから10分以上経過しています。
