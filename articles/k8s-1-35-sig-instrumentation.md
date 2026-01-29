@@ -87,7 +87,7 @@ zenn on  main [!+?] on ☁  (ap-northeast-1)
 - Added a `source` label to the `resourceclaim_controller_resource_claims` metric.
 Added the `scheduler_resourceclaim_creates_total` metric for `DRAExtendedResource`. ([#134523](https://github.com/kubernetes/kubernetes/pull/134523), [@bitoku](https://github.com/bitoku)) [SIG Apps, Instrumentation, Node and Scheduling] [sig/scheduling,sig/node,sig/apps,sig/instrumentation]
   * [scheduler_resourceclaim_creates_total](#scheduler_resourceclaim_creates_total)
-    * スケジューラの PreBind フェーズで Kubernetes API を呼び出して ResourceClaim を作成しているため、resourceclaim_controller_creates_total とは別のメトリクスが必要です。
+    * スケジューラの PreBind フェーズで Kubernetes API を呼び出して ResourceClaim を作成しているため、resourceclaim_controller_resource_claims とは別のメトリクスが必要です。
     * このメトリクスは、API 呼び出しの結果（成功または失敗）に応じてカウントが増加します。
   * [resourceclaim_controller_resource_claims](#resourceclaim_controller_resource_claims)
     * `source` labelが追加されました。
