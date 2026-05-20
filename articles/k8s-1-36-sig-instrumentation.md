@@ -3,13 +3,11 @@ title: "Kubernetes 1.36: SIG-Instrumentationの変更内容" # 記事のタイ�
 emoji: "☸️" # アイキャッチとして使われる絵文字（1文字だけ）
 type: "tech" # tech: 技術記事 / idea: アイデア記事
 topics: ["kubernetes"] # タグ。["markdown", "rust", "aws"]のように指定する
-published: false # 公開設定（falseにすると下書き）
+published: true # 公開設定（falseにすると下書き）
 ---
 
 # はじめに
 本記事では Kubernetes v1.36 の [Changelog](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.36.md) から、SIG-Instrumentation 関連及びメトリクスの変更点について取り上げ、まとめています。
-
-今回参照した changelog は `master` ブランチ上の `CHANGELOG-1.36.md` です。`v1.36.1` の記述も含まれていますが、本記事では主に `v1.36.0` の変更を対象にしています。
 
 * [Kubernetes 1.31 SIG Instrumentation の変更内容](https://qiita.com/watawuwu/items/ae739b0a2085bd16c0f9)
 * [Kubernetes 1.32 SIG Instrumentation の変更内容](https://qiita.com/watawuwu/items/5280af2088bbc1a86aca)
@@ -78,7 +76,7 @@ published: false # 公開設定（falseにすると下書き）
   - `kubelet_websocket_streaming_requests_total` は kubelet が受ける exec / attach / portforward を計測します。
   - `kubelet_metrics_provider` は container stats の収集元が `cadvisor` か `cri` かを示します。
 
-- コントローラ系では stale watch cache に起因する skip を示すメトリクスが追加されています。
+- コントローラ系では stale watch cache に起因する skip を示すメトリクスが追加されています。 (Stale Controller Mitigation KEP-5647)
   - `daemonset_controller_stale_sync_skips_total` ([#134937](https://github.com/kubernetes/kubernetes/pull/134937))
     - DaemonSet controller が前回 sync 時の write をまだ watch cache で観測できていない場合に sync を defer し、その回数を記録します。
   - `job_controller_stale_sync_skips_total` ([#137210](https://github.com/kubernetes/kubernetes/pull/137210))
@@ -94,8 +92,13 @@ published: false # 公開設定（falseにすると下書き）
 
 ## Bug or Regression
 
-- watch cache の resource version メトリクスが 15 桁に truncate されるようになりました。 ([#137615](https://github.com/kubernetes/kubernetes/pull/137615))
-  - `float64` に載せた際の精度問題を避ける意図と思われ、`apiserver_watch_cache_resource_version` や `informer_store_resource_version` の説明にもその前提が現れています。
+- `apiserver_watch_cache_resource_version` において watch cache の resource version メトリクスが 下15 桁に truncate されるようになりました。 ([#137615](https://github.com/kubernetes/kubernetes/pull/137615))
+  - `float64` に載せた際の精度問題を避ける意図のようです。
+  - `informer_store_resource_version` でも同様の対応がとられています。
+
+```
+float64(resourceVersion % 1000000000000000)
+```
 
 - 一部メトリクスが実際のレイテンシではなくほぼ 0 に近い値を記録していた不具合が修正されました。 ([#135749](https://github.com/kubernetes/kubernetes/pull/135749))
   - `event_handling_duration_seconds`
@@ -104,9 +107,6 @@ published: false # 公開設定（falseにすると下書き）
   - `store_schedule_results_duration_seconds`
 
 ## Other (Cleanup or Flake)
-
-- server image が `go-runner` ではなく `kube-log-runner` を利用するようになりました。 ([#136954](https://github.com/kubernetes/kubernetes/pull/136954))
-  - 直接的な metrics 変更ではありませんが、SIG-Instrumentation の cleanup として入っています。
 
 # Kubernetes Metrics Changes: v1.35.0 → v1.36.0
 自動生成したメトリクスの差分の一覧を掲載しています。
