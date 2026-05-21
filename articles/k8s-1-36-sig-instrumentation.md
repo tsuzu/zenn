@@ -42,11 +42,16 @@ published: true # 公開設定（falseにすると下書き）
 
 - Manifest-based admission control configuration (KEP-5793) が alpha として追加されました。 ([#137346](https://github.com/kubernetes/kubernetes/pull/137346))
   - これに関連して `apiserver_manifest_admission_config_controller_*` メトリクスが追加されています。
+    - `apiserver_manifest_admission_config_controller_last_config_info`
+    - `apiserver_manifest_admission_config_controller_automatic_reloads_total`
+    - `apiserver_manifest_admission_config_controller_automatic_reload_last_timestamp_seconds`
 
 ## Features
 
-- Prometheus native histogram support が `kube-apiserver`、`kube-controller-manager`、`kube-scheduler` で有効化可能になりました。 ([#136763](https://github.com/kubernetes/kubernetes/pull/136763), [#137779](https://github.com/kubernetes/kubernetes/pull/137779), [#137466](https://github.com/kubernetes/kubernetes/pull/137466))
-  - feature gate 有効時に classic histogram と native histogram の両方が公開されます。
+- Prometheus native histogram support が `kube-apiserver`、`kube-controller-manager`、`kube-scheduler` で有効化可能になりました。 (KEP-5808: Native Histogram Support for Kubernetes Metrics, [#136763](https://github.com/kubernetes/kubernetes/pull/136763), [#137779](https://github.com/kubernetes/kubernetes/pull/137779), [#137466](https://github.com/kubernetes/kubernetes/pull/137466))
+  - `NativeHistograms` feature gate 有効時に classic histogram と native histogram の両方が公開されます。
+  - 動的に適切なbucket分割が自動で行われるようになるためより正確なhistogramを見ることができるようになります。
+  - https://kubernetes.io/docs/reference/instrumentation/native-histograms/
 
 - さまざまな既存メトリクスが alpha から beta に昇格しました。 ([#136314](https://github.com/kubernetes/kubernetes/pull/136314), [#136086](https://github.com/kubernetes/kubernetes/pull/136086), [#136368](https://github.com/kubernetes/kubernetes/pull/136368), [#136154](https://github.com/kubernetes/kubernetes/pull/136154), [#136155](https://github.com/kubernetes/kubernetes/pull/136155), [#136178](https://github.com/kubernetes/kubernetes/pull/136178), [#136367](https://github.com/kubernetes/kubernetes/pull/136367), [#135522](https://github.com/kubernetes/kubernetes/pull/135522))
   - `apiserver_storage_events_received_total`
@@ -58,7 +63,7 @@ published: true # 公開設定（falseにすると下書き）
   - Job controller 関連メトリクス
   - workqueue 関連メトリクス
 
-- informer 関連の新メトリクスが追加されました。 ([#135782](https://github.com/kubernetes/kubernetes/pull/135782), [#137419](https://github.com/kubernetes/kubernetes/pull/137419), [#137101](https://github.com/kubernetes/kubernetes/pull/137101))
+- informer 関連の新メトリクスが追加されました。 (KEP-4346: Informer Metrics, [#135782](https://github.com/kubernetes/kubernetes/pull/135782), [#137419](https://github.com/kubernetes/kubernetes/pull/137419), [#137101](https://github.com/kubernetes/kubernetes/pull/137101))
   - `informer_queued_items`
   - `informer_store_resource_version`
   - `informer_processing_latency_seconds`
@@ -73,15 +78,12 @@ published: true # 公開設定（falseにすると下書き）
   - `kubelet_websocket_streaming_requests_total` は kubelet が受ける exec / attach / portforward を計測します。
   - `kubelet_metrics_provider` は container stats の収集元が `cadvisor` か `cri` かを示します。
 
-- コントローラ系では stale watch cache に起因する skip を示すメトリクスが追加されています。 (Stale Controller Mitigation KEP-5647)
+- コントローラ系では stale watch cache に起因する skip を示すメトリクスが追加されています。 (KEP-5647: Stale Controller Mitigation)
   - `daemonset_controller_stale_sync_skips_total` ([#134937](https://github.com/kubernetes/kubernetes/pull/134937))
-    - DaemonSet controller が前回 sync 時の write をまだ watch cache で観測できていない場合に sync を defer し、その回数を記録します。
   - `job_controller_stale_sync_skips_total` ([#137210](https://github.com/kubernetes/kubernetes/pull/137210))
-    - Job controller でも同様に、stale な cache に起因する二重作成を避けるため sync を defer した回数を記録します。
   - `replicaset_controller_stale_sync_skips_total` ([#137212](https://github.com/kubernetes/kubernetes/pull/137212))
-    - ReplicaSet controller が自身の write を watch cache で観測する前に再 reconcile してしまうケースを避けるための変更です。
   - `statefulset_controller_stale_sync_skips_total` ([#137254](https://github.com/kubernetes/kubernetes/pull/137254))
-    - StatefulSet controller でも同様に、自身の write を read できることを前提に stale cache 起因の不整合を避けるため sync defer が入ります。
+    - 前回 sync 時の write をまだ watch cache で観測できていない場合に sync を defer し、その回数を記録します。
 
 ## Documentation
 
