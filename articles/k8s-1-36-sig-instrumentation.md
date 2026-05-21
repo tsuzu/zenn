@@ -24,9 +24,6 @@ published: true # 公開設定（falseにすると下書き）
 - `etcd_bookmark_counts` が `etcd_bookmark_total` にリネームされました。こちらも既存の監視設定を更新する必要があります。 ([#136483](https://github.com/kubernetes/kubernetes/pull/136483))
   - 旧メトリクスは deprecated になり、新しい counter メトリクスへ移行する形です。
 
-- `DRAResourceClaimGranularStatusAuthorization` feature gate が有効な場合、DRA 関連コンポーネントにより細かい RBAC 権限が必要になります。 ([#134947](https://github.com/kubernetes/kubernetes/pull/134947))
-  - instrumentation 自体の変更というより、DRA 周辺の新メトリクスやコントローラ動作を追う際の前提として重要です。
-
 ## Deprecation
 
 - `volume_operation_total_errors` は 1.36 で deprecated となり、`volume_operation_errors_total` へ移行します。 ([#136399](https://github.com/kubernetes/kubernetes/pull/136399))
@@ -105,6 +102,24 @@ float64(resourceVersion % 1000000000000000)
   - `preemption_goroutines_duration_seconds`
   - `run_podsandbox_duration_seconds`
   - `store_schedule_results_duration_seconds`
+
+```go
+	// --- 1. ❌ INCORRECT WAY: Immediate Argument Evaluation ---
+	// The function time.Since(start) is an ARGUMENT to fmt.Println.
+	// Go's defer rule states that arguments are evaluated IMMEDIATELY
+	// when the defer statement is executed.
+	// Result: Reports a time duration close to zero.
+	defer fmt.Println("❌ Incorrect Value (Immediate Evaluation):", time.Since(start)) 
+
+	// --- 2. ✅ CORRECT WAY: Using a Closure/Anonymous Function ---
+	// The deferred function is now the anonymous function itself (func() {}).
+	// The code inside the closure (time.Since(start)) is NOT evaluated
+	// until the function exits and the deferred call is actually made.
+	// Result: Reports the true duration of the main function's execution.
+	defer func() {
+		fmt.Println("✅ Correct Value (Delayed Evaluation):", time.Since(start))
+	}()
+```
 
 ## Other (Cleanup or Flake)
 
