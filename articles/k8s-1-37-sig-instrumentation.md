@@ -35,6 +35,10 @@ published: false # 公開設定（falseにすると下書き）
 
 - `kubectl top` が `metrics.k8s.io/v1` に対応しました。メトリクスサーバーなどの実装が `v1` を提供している場合、`kubectl top` から利用できます。 ([#139726](https://github.com/kubernetes/kubernetes/pull/139726))
 
+- metrics-server側では [`metrics.k8s.io/v1` のAPIサポート](https://github.com/kubernetes-sigs/metrics-server/pull/1855) が実装され、2026年9月25日にmasterへマージされました。
+  - ただし、本記事執筆時点（2026年9月26日）のmetrics-server本体の最新リリースは `v0.9.0` です。公式の互換性表では `0.9.x` が提供するMetrics APIは `metrics.k8s.io/v1beta1` と記載されており、PR #1855の `v1` 対応を含むリリースはまだ公開されていません。 ([リリース一覧](https://github.com/kubernetes-sigs/metrics-server/releases), [互換性表](https://github.com/kubernetes-sigs/metrics-server#compatibility-matrix))
+  - そのため、Kubernetes 1.37側で `metrics.k8s.io/v1` と `kubectl top` がサポートされても、metrics-serverのリリース版が `v1` を提供するまでは、クラスタ上で `metrics.k8s.io/v1` のエンドポイントを利用できない点に注意が必要です。
+
 - kubelet PodsAPI gRPC serviceがBetaに昇格しました。Podの情報を取得するクライアントは、Beta APIとして扱えるようになります。 ([#140286](https://github.com/kubernetes/kubernetes/pull/140286))
 
 ## Features
@@ -70,6 +74,43 @@ published: false # 公開設定（falseにすると下書き）
 
 - `scheduler_plugin_execution_duration_seconds`、`scheduler_scheduling_algorithm_duration_seconds` がAlphaからBetaに昇格しました。また、`apiserver_watch_events_total`、`apiserver_watch_events_sizes`、kubeletの `storage_operation_duration_seconds`、`volume_operation_total_seconds`、service account関連の3メトリクス、webhook関連の2メトリクスもBetaに昇格しました。 ([#138176](https://github.com/kubernetes/kubernetes/pull/138176), [#137116](https://github.com/kubernetes/kubernetes/pull/137116), [#136189](https://github.com/kubernetes/kubernetes/pull/136189), [#137072](https://github.com/kubernetes/kubernetes/pull/137072), [#136894](https://github.com/kubernetes/kubernetes/pull/136894))
 
+### API server・controller・ストレージ
+
+- API serverのLIST・watch cache関連では、既存メトリクスの観測範囲も広がっています。
+  - `apiserver_storage_list_evaluated_objects_total`、`apiserver_storage_list_fetched_objects_total`、`apiserver_storage_list_returned_objects_total`、`apiserver_storage_list_total` に `storage` ラベルが追加され、fetched / returned / evaluated の内訳をストレージ種別ごとに比較できるようになりました。`fetched` と `total` には `index` ラベルも追加されています。 ([#139125](https://github.com/kubernetes/kubernetes/pull/139125))
+  - `apiserver_watch_cache_initialization_errors_total` が追加され、リソース種別ごとのwatch cache初期化失敗をカウントできるようになりました。
+  - `apiserver_webhooks_x509_insecure_sha1_total` と `apiserver_webhooks_x509_missing_san_total` はBetaに昇格しました。webhookの証明書互換性問題を監視するメトリクスとして、Alpha前提の監視から安定性の高い監視へ移行できます。 ([#136894](https://github.com/kubernetes/kubernetes/pull/136894))
+
+- controller・cloud provider・ストレージの状態を観測するメトリクスも追加されました。
+  - `cloud_node_lifecycle_controller_cloud_provider_calls_total` はcloud provider APIの呼び出しをoperationとresult別に、`cloud_node_lifecycle_controller_monitor_nodes_duration_seconds` はNode監視ループの実行時間を記録します。
+  - `horizontal_pod_autoscaler_controller_stale_sync_skips_total` により、watch cacheが古いためHPAのsyncを延期した回数を確認できます。1.36で導入されたstale controller mitigationの対象がHPAにも広がった形です。
+  - `csi_node_storage_health_status` はCSI driverごとのnode側ストレージ状態を、`driver_name`、`reason`、`status` ラベルで公開します。Volume Healthを監視する際に利用できます。
+
+### DRA
+
+- DRAのメトリクスは、ResourceClaimの作成元と所有者を区別しやすい形に整理されました。
+  - `dra_node_prepare_skips_total` と `dra_node_unprepare_skips_total` は、`SkipNodeOperations` によってNodePrepareResources / NodeUnprepareResourcesを省略した回数をdriverごとに記録します。
+  - `dynamic_resource_allocation_resource_claims` はResourceClaimの割り当て状態・admin access・sourceを公開します。sourceはResourceClaimTemplate、extended resource、手動作成を区別します。
+  - `dynamic_resource_allocation_resourceclaim_creates_total` はcontrollerとschedulerで共通のメトリクスになり、`owner_api_group` と `owner_api_kind` によってPodとPodGroupを区別できます。既存の `resourceclaim_controller_creates_total`、`resourceclaim_controller_resource_claims`、`scheduler_resourceclaim_creates_total` は削除対象です。
+
+### kubelet・kube-proxy
+
+- kubeletのPodsAPIとexclusive resource allocationの利用状況が観測できるようになりました。
+  - `kubelet_pod_requests_total`、`kubelet_pod_requests_get_total`、`kubelet_pod_requests_list_total`、`kubelet_pod_requests_watch_total` は、PodsAPIへのリクエストをserver API versionとHTTP status code別に記録します。
+  - `kubelet_resource_manager_allocations_total`、`kubelet_resource_manager_allocation_errors_total`、`kubelet_resource_manager_container_assignments_total` により、resource managerの割り当て成功・失敗とcontainerへのassignment typeを確認できます。旧名の `resource_manager_*` は削除されているため、ダッシュボードやアラートのメトリクス名を更新する必要があります。
+
+- nftables kube-proxyのlocalhost NodePort userspace proxy向けメトリクスが追加されました。
+  - `kubeproxy_nftables_localhost_nodeport_listeners` でactiveなlistener数を、`kubeproxy_nftables_localhost_nodeport_listener_creation_failures_total` でlistener作成失敗を確認できます。
+  - `kubeproxy_nftables_localhost_nodeport_rejected_packets_total` は、IP familyとprotocol別にlocalhost NodePortで拒否されたpacket数を記録します。localhost NodePortを利用する場合は、proxyが動作していない状態やUDP/SCTPの拒否を切り分けるのに使えます。 ([#138427](https://github.com/kubernetes/kubernetes/pull/138427))
+
+- schedulerではPodGroup・preemption・opportunistic batchingの観測対象が増えました。
+  - `scheduler_batch_rescore_attempts_total` と `scheduler_batch_rescore_duration_seconds` により、opportunistic batchingでnodeをrescoreした回数とレイテンシを確認できます。
+  - `scheduler_preemption_evaluation_duration_seconds`、`scheduler_preemption_execution_duration_seconds`、`scheduler_preemption_pdb_violations_total` は、preemption対象の評価・実行時間とPDB違反を記録します。
+  - `scheduler_preemption_workload_disruptions` と `scheduler_workload_preemption_attempts_total`、`scheduler_workload_preemption_victims` は、Pod単位のpreemptionとWorkload / PodGroup単位のpreemptionを分けて観測するためのメトリクスです。
+  - Stableの `scheduler_pending_pods` はhelpが更新され、PodGroup schedulingに対応して `incomplete` や `pending` のqueue状態も説明されるようになりました。`scheduler_preemption_victims` も単一Pod起点のpreemptionを表すことが明記されています。
+
+- 既存メトリクスの説明だけが更新されたものもあります。`replicaset_controller_sorting_deletion_age_ratio` から古いFeature gateへの言及が削除され、`scheduler_pod_scheduled_after_flush_total` などではPodだけでなくscheduling entityを扱う現在の実装に合わせてhelpが更新されました。メトリクス名や型が変わらなくても、運用者向けドキュメントやダッシュボードの説明を確認しておく必要があります。
+
 ## Documentation
 
 - kube-proxyの `--metrics-bind-address` のドキュメントから、空文字を指定するとmetrics serverが無効になるという誤った説明が削除されました。 ([#138940](https://github.com/kubernetes/kubernetes/pull/138940))
@@ -87,6 +128,15 @@ published: false # 公開設定（falseにすると下書き）
 ## Other (Cleanup or Flake)
 
 - 非推奨の `apiserver_cache_list_*` メトリクスがデフォルトでは公開されなくなりました。Watch cacheを利用したLISTについては、`storage="watchcache"` の `apiserver_storage_list_*` へ移行します。 ([#139154](https://github.com/kubernetes/kubernetes/pull/139154))
+
+- v1.37で削除されたメトリクスは次の15個です。監視ルールやダッシュボードで利用している場合は、削除理由と移行先を確認してください。
+  - API server: `apiserver_flowcontrol_request_concurrency_in_use`、`apiserver_flowcontrol_request_concurrency_limit`、`apiserver_request_slo_duration_seconds`、`apiserver_storage_db_total_size_in_bytes`
+  - etcd / kube-apiserver: `etcd_version_info`、`kube_apiserver_pod_logs_pods_logs_backend_tls_failure_total`、`kube_apiserver_pod_logs_pods_logs_insecure_backend_total`
+  - kubelet / resource manager: `kubelet_volume_stats_health_status_abnormal`、`resource_manager_allocation_errors_total`、`resource_manager_allocations_total`、`resource_manager_container_assignments`
+  - その他: `latency`、`resourceclaim_controller_creates_total`、`resourceclaim_controller_resource_claims`、`scheduler_resourceclaim_creates_total`
+  - ResourceClaim関連は前述の `dynamic_resource_allocation_*` へ統合されていますが、それ以外は一律の置換先があるとは限りません。削除されたメトリクスを参照するPromQLの有無を確認するのが安全です。
+
+- service account関連の `serviceaccount_legacy_tokens_total`、`serviceaccount_stale_tokens_total`、`serviceaccount_valid_tokens_total` はBetaに昇格しました。Alphaのため許容していたメトリクス名・ラベル変更の余地が小さくなり、長期的なtoken利用状況の監視に使いやすくなっています。 ([#137072](https://github.com/kubernetes/kubernetes/pull/137072))
 
 # Kubernetes Metrics Changes: v1.36.0 → v1.37.0
 
