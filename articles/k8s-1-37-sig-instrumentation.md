@@ -59,7 +59,8 @@ published: false # 公開設定（falseにすると下書き）
   - Topology-aware schedulingのplacement phase向けに、`scheduler_generated_placements_total`、`scheduler_placement_evaluations_total`、`scheduler_placement_evaluation_duration_seconds` が追加されました。 ([#139604](https://github.com/kubernetes/kubernetes/pull/139604))
   - Workload-aware preemption向けのメトリクスがAlphaとして追加されました。 ([#139373](https://github.com/kubernetes/kubernetes/pull/139373))
   - scheduling queueにあるPodまたはPodGroupの数を示す `scheduler_queued_entities` と、queueに追加された総数を示す `scheduler_queue_incoming_entities_total` が追加されました。 ([#139840](https://github.com/kubernetes/kubernetes/pull/139840))
-  - `SchedulerPreQueueingHints` に対応する `scheduler_pre_queueing_hint_evaluations_total` などが追加されました。
+  - `SchedulerPreQueueingHints` に対応する `scheduler_pre_queueing_hint_evaluations_total` などが追加されました。PreQueueingHint拡張点と関連メトリクスは、この機能を追加したPRで導入されています。 ([#138916](https://github.com/kubernetes/kubernetes/pull/138916))
+  - その後、既知の問題を受けて `SchedulerPreQueueingHints` をBetaからAlphaへ変更した経緯は、[SchedulerPreQueueingHintsをBetaからAlphaへ変更したPR #140959](https://github.com/kubernetes/kubernetes/pull/140959)で説明されています。
 
 - kubeletのPod resizeとPod-Level Resourcesに関するメトリクスが追加・更新されました。
   - `kubelet_pod_deferred_resize_duration_seconds` が追加され、`kubelet_pod_pending_resizes` に `priority_bucket` ラベルが追加されました。 ([#140122](https://github.com/kubernetes/kubernetes/pull/140122))
