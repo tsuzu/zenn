@@ -3,16 +3,12 @@ title: "Kubernetes 1.37: SIG-Instrumentationの変更内容" # 記事のタイ�
 emoji: "☸️" # アイキャッチとして使われる絵文字（1文字だけ）
 type: "tech" # tech: 技術記事 / idea: アイデア記事
 topics: ["kubernetes"] # タグ。["markdown", "rust", "aws"]のように指定する
-published: false # 公開設定（falseにすると下書き）
+published: true # 公開設定（falseにすると下書き）
 ---
 
 # はじめに
 本記事では Kubernetes v1.37 の [Changelog](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.37.md) から、SIG-Instrumentation 関連及びメトリクスの変更点について取り上げ、まとめています。
 
-* [Kubernetes 1.31 SIG Instrumentation の変更内容](https://qiita.com/watawuwu/items/ae739b0a2085bd16c0f9)
-* [Kubernetes 1.32 SIG Instrumentation の変更内容](https://qiita.com/watawuwu/items/5280af2088bbc1a86aca)
-* [Kubernetes 1.33: SIG-Instrumentationの変更内容](https://zenn.dev/tsuzu/articles/k8s-1-33-sig-instrumentation)
-* [Kubernetes 1.34: SIG-Instrumentationの変更内容](https://zenn.dev/tsuzu/articles/k8s-1-34-sig-instrumentation)
 * [Kubernetes 1.35: SIG-Instrumentationの変更内容](https://zenn.dev/tsuzu/articles/k8s-1-35-sig-instrumentation)
 * [Kubernetes 1.36: SIG-Instrumentationの変更内容](https://zenn.dev/tsuzu/articles/k8s-1-36-sig-instrumentation)
 
