@@ -24,30 +24,33 @@ published: true # 公開設定（falseにすると下書き）
 - `apiserver_cache_list_total`、`apiserver_cache_list_fetched_objects_total`、`apiserver_cache_list_returned_objects_total` がdeprecatedになりました。Watch cache経由のLISTに関する情報は、`storage="watchcache"` を指定した `apiserver_storage_list_*` メトリクスへの移行が推奨されています。 ([#139154](https://github.com/kubernetes/kubernetes/pull/139154))
 
 - `scheduler_preemption_goroutines_duration_seconds` がdeprecatedになりました。詳細は後述のメトリクス差分に記載しています。
+  * `preemption_execution_duration_seconds` を利用してください。
 
 ## API Changes
 
 - `metrics.k8s.io` APIが `v1beta1` から `v1` に昇格しました。APIのフィールドや返却内容に変更はなく、API versionの昇格です。既存の `v1beta1` も引き続き利用できます。 ([#139223](https://github.com/kubernetes/kubernetes/pull/139223))
 
 - `kubectl top` が `metrics.k8s.io/v1` に対応しました。メトリクスサーバーなどの実装が `v1` を提供している場合、`kubectl top` から利用できます。 ([#139726](https://github.com/kubernetes/kubernetes/pull/139726))
-
-- metrics-server側では [`metrics.k8s.io/v1` のAPIサポート](https://github.com/kubernetes-sigs/metrics-server/pull/1855) が実装され、2026年9月25日にmasterへマージされました。
-  - ただし、本記事執筆時点（2026年9月26日）のmetrics-server本体の最新リリースは `v0.9.0` です。公式の互換性表では `0.9.x` が提供するMetrics APIは `metrics.k8s.io/v1beta1` と記載されており、PR #1855の `v1` 対応を含むリリースはまだ公開されていません。 ([リリース一覧](https://github.com/kubernetes-sigs/metrics-server/releases), [互換性表](https://github.com/kubernetes-sigs/metrics-server#compatibility-matrix))
-  - そのため、Kubernetes 1.37側で `metrics.k8s.io/v1` と `kubectl top` がサポートされても、metrics-serverのリリース版が `v1` を提供するまでは、クラスタ上で `metrics.k8s.io/v1` のエンドポイントを利用できない点に注意が必要です。
-
-- kubelet PodsAPI gRPC serviceがBetaに昇格しました。Podの情報を取得するクライアントは、Beta APIとして扱えるようになります。 ([#140286](https://github.com/kubernetes/kubernetes/pull/140286))
+  - metrics-server側では [`metrics.k8s.io/v1` のAPIサポート](https://github.com/kubernetes-sigs/metrics-server/pull/1855) が実装され、2026年9月25日にmasterへマージされました。
+    - ただし、本記事執筆時点（2026年9月26日）のmetrics-server本体の最新リリースは `v0.9.0` です。公式の互換性表では `0.9.x` が提供するMetrics APIは `metrics.k8s.io/v1beta1` と記載されており、PR #1855の `v1` 対応を含むリリースはまだ公開されていません。 ([リリース一覧](https://github.com/kubernetes-sigs/metrics-server/releases), [互換性表](https://github.com/kubernetes-sigs/metrics-server#compatibility-matrix))
+    - そのため、Kubernetes 1.37側で `metrics.k8s.io/v1` と `kubectl top` がサポートされても、metrics-serverのリリース版が `v1` を提供するまでは、クラスタ上で `metrics.k8s.io/v1` のエンドポイントを利用できない点に注意が必要です。
 
 ## Features
 
 - Prometheus Native HistogramsのFeature gateがBetaに昇格しました。従来のclassic histogramとのdual expositionにより、既存のメトリクス利用者への互換性を保ちながらnative histogramを利用できます。 ([#140124](https://github.com/kubernetes/kubernetes/pull/140124))
-  - Prometheus側の対応状況や収集設定を確認したうえで、native histogramの利用を検討できます。
+  - Native Histogramについては [こちらの記事](https://qiita.com/yosshi_/items/482a4dcc8ce08e19318e) が詳しいのでぜひご覧ください。
+  * 1.37時点では classic histogram と native histogram の両方が公開されます。
+  * 動的に適切なbucket分割が自動で行われるようになるためより正確なhistogramを見ることができるようになります。
+  * https://kubernetes.io/docs/reference/instrumentation/native-histograms/
 
 - API serverのLISTおよびwatch cacheを観測するメトリクスが拡充されました。
   - `apiserver_storage_list_duration_seconds` でetcdの読み出しからオブジェクトのdecodeまでのLISTレイテンシを計測できます。 ([#140697](https://github.com/kubernetes/kubernetes/pull/140697))
   - `apiserver_storage_list_*` に `storage` と `index` ラベルが追加され、利用したストレージバックエンドと検索経路を区別できます。 ([#139125](https://github.com/kubernetes/kubernetes/pull/139125))
+    * 1つのmetricでcacheから読んだか、etcdから読んだかを区別できるようになります。
   - `apiserver_watch_cache_initialization_duration_seconds` でwatch cacheの初期化時間を確認できます。 ([#138767](https://github.com/kubernetes/kubernetes/pull/138767))
   - `apiserver_watch_events_dispatch_duration_seconds` と `storage_to_cache`、`cache_to_watcher` のstageにより、watch eventのdecodeからwatcherへの配送までを分解して確認できます。 ([#140336](https://github.com/kubernetes/kubernetes/pull/140336), [#140851](https://github.com/kubernetes/kubernetes/pull/140851), [#140860](https://github.com/kubernetes/kubernetes/pull/140860))
   - `watch_list_duration_seconds` に90秒、120秒、180秒、300秒のbucketが追加されました。 ([#140757](https://github.com/kubernetes/kubernetes/pull/140757))
+  - ( API Serverのlatency系metricsが沢山増えたのでv1.37時点での対応関係を可視化するページをClaudeと作りました https://claude.ai/artifact/8wRmCdbFPSvmjeDDy398vz ) 
 
 - kube-apiserverでinformer activityのメトリクスが利用できるようになりました。さらにkube-schedulerでも、`name="kube-scheduler"` のラベル付きで `informer_store_resource_version`、`informer_queued_items`、`informer_processing_latency_seconds` が公開されます。 ([#139968](https://github.com/kubernetes/kubernetes/pull/139968), [#140511](https://github.com/kubernetes/kubernetes/pull/140511))
 
